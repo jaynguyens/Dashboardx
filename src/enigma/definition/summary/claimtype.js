@@ -1,4 +1,4 @@
-export const SummaryClaimType = {
+const SummaryClaimType = {
 	qInfo: {
 		qType: "stackbarchart",
 	},
@@ -30,4 +30,6 @@ export const SummaryClaimType = {
 			},
 		],
 	},
-}
+};
+
+export default SummaryClaimType;
