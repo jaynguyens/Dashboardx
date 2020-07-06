@@ -8,13 +8,11 @@ import {
 	useParams,
 } from "react-router-dom"
 import Homepage from "./pages/homepage"
-
+import SummaryPage from "./pages/summary"
 const Routes = () => {
 	return (
 		<Router>
 			<div>
-				<Link to="/">Home</Link>
-				<Link to="/dashboard">Dashboard</Link>
 				<Switch>
 					<Route path="/dashboard">
 						<Dashboards />
@@ -54,6 +52,7 @@ function Dashboards() {
 				</Route>
 				<Route path={match.path}>
 					<h3>Summary dashboard here.</h3>
+					<SummaryPage />
 				</Route>
 			</Switch>
 		</div>
