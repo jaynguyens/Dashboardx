@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react"
-import QDocContext from "../../enigma/docProvider"
+import { QDocContext } from "../../enigma/docProvider"
 import SummaryClaimsType from "../../enigma/definition/summary/claimstype"
 
 const SummaryPage = () => {
@@ -18,7 +18,11 @@ const SummaryPage = () => {
 		ClaimType()
 	}, [qdoc])
 
-	return <div></div>
+	return (
+		<div>
+			<h4>Dashboard Summary</h4>
+		</div>
+	)
 }
 
 export default SummaryPage
