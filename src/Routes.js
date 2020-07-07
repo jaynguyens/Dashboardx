@@ -31,7 +31,7 @@ function Dashboards() {
 
 	return (
 		<div>
-			<h2>Claims Insurance 2020</h2>
+			{/* <h2>Claims Insurance 2020</h2>
 
 			<ul>
 				<li>
@@ -45,13 +45,12 @@ function Dashboards() {
 					</Link>
 				</li>
 			</ul>
-
+ */}
 			<Switch>
 				<Route path={`${match.path}/:topicId`}>
 					<Topic />
 				</Route>
 				<Route path={match.path}>
-					<h3>Summary dashboard here.</h3>
 					<SummaryPage />
 				</Route>
 			</Switch>
