@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react"
 import * as d3 from "d3"
 
-const StackedBarChart = ({ data }) => {
+const StackedBarChart = () => {
 	const svgRef = useRef()
 	const wrapperRef = useRef()
 
@@ -61,7 +61,6 @@ const StackedBarChart = ({ data }) => {
 			bottom: 30,
 			left: 40,
 		}
-		console.log(wrapperRef.current.getBoundingClientRect())
 
 		const stackGenerator = d3
 			.stack()
