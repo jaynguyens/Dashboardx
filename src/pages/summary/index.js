@@ -3,10 +3,14 @@ import { QDocContext } from "../../enigma/docProvider"
 import SummaryClaimsType from "../../enigma/definition/summary/claimstype"
 import styled from "styled-components"
 import StackedBarChart from "./stackedBarChart"
+import HyperCubeData from "../../enigma/definition/summary/dataFromHyperCubeObject"
+import ClaimsOpened from "./claimsOpened"
 
 const SummaryPage = () => {
 	const [Data, setData] = useState([])
-	const [Dataset, setDataset] = useState([])
+	const [Opened, setOpened] = useState()
+	const [Settled, setSettled] = useState()
+	const [Payments, setPayments] = useState()
 
 	const qdoc = useContext(QDocContext)
 
@@ -23,39 +27,52 @@ const SummaryPage = () => {
 		ClaimType()
 	}, [qdoc])
 
-	//TODO: extract data from raw dataset
-	/** GOAL is to extract data in this type of structure
-	[
-		["2016", "Windscreen", "148"],
-		["2016", "Theft", "32"],
-		["2016", "Fire", "2"]
-	]
-	 */
+	// TODO: send the data in to StackedBarChart in the given structure
+
+	// TODO: make a custom hooks
+	useEffect(() => {
+		const ClaimOpened = async () => {
+			// const session = await qdoc.createSessionObject(SummaryClaimsOpened)
+			const layout = await qdoc.getObject("YAJMNj")
+			const data = await layout.getHyperCubeData(HyperCubeData)
+			setOpened(data[0].qMatrix)
+		}
+		ClaimOpened()
+	}, [qdoc])
+
+	//
+	useEffect(() => {
+		const ClaimOpened = async () => {
+			const layout = await qdoc.getObject("KrmuYX")
+			const data = await layout.getHyperCubeData(HyperCubeData)
+			setSettled(data[0].qMatrix)
+		}
+		ClaimOpened()
+	}, [qdoc])
 
 	useEffect(() => {
-		const ExtractData = async () => {
-			setDataset(
-				Data.map((datum) =>
-					datum.map((d) => {
-						return d.qText
-					})
-				)
-			)
+		const ClaimOpened = async () => {
+			const layout = await qdoc.getObject("nqdxN")
+			const data = await layout.getHyperCubeData(HyperCubeData)
+			setPayments(data[0].qMatrix)
 		}
-		ExtractData()
-	}, [Data])
-
-	/**
-	 * pass dataset to the component
-	 */
+		ClaimOpened()
+	}, [qdoc])
 
 	return (
 		<Div>
-			<MiniCharts />
-			<MiniCharts />
-			<MiniCharts />
+			<MiniCharts>
+				<ClaimsOpened data={Opened} />
+			</MiniCharts>
+
+			<MiniCharts>
+				<ClaimsOpened data={Settled} />
+			</MiniCharts>
+			<MiniCharts>
+				<ClaimsOpened data={Payments} />
+			</MiniCharts>
 			<BigChart>
-				<StackedBarChart data={Dataset} />
+				<StackedBarChart />
 			</BigChart>
 		</Div>
 	)
