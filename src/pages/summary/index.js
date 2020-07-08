@@ -4,7 +4,7 @@ import styled from "styled-components"
 import SummaryClaimsType from "../../enigma/definition/summary/claimstype"
 import StackedBarChart from "./stackedBarChart"
 import HyperCubeData from "../../enigma/definition/summary/dataFromHyperCubeObject"
-import ClaimsOpened from "./claimsOpened"
+import Indicator from "./indicator"
 
 import useHyperCubeDataObject from "../../hooks/useHyperCubeDataObject"
 import useLayoutSessionObject from "../../hooks/useLayoutSessionObject"
@@ -17,17 +17,30 @@ const SummaryPage = () => {
 	const openedClaims = useHyperCubeDataObject("YAJMNj", HyperCubeData)
 	const settledClaims = useHyperCubeDataObject("KrmuYX", HyperCubeData)
 	const paymentsClaims = useHyperCubeDataObject("nqdxN", HyperCubeData)
-
+	// TODO: should i use promise all?
+	// const FetchData = async () => {
+	// 	const [
+	// 		openedClaims,
+	// 		settledClaims,
+	// 		paymentsClaims,
+	// 	] = await Promise.all([
+	// 		useHyperCubeDataObject("YAJMNj", HyperCubeData),
+	// 		useHyperCubeDataObject("KrmuYX", HyperCubeData),
+	// 		useHyperCubeDataObject("nqdxN", HyperCubeData),
+	// 	])
+	// 	return [openedClaims, settledClaims, paymentsClaims]
+	// }
+	// FetchData()
 	return (
 		<Div>
 			<MiniCharts>
-				<ClaimsOpened data={openedClaims} />
+				<Indicator data={openedClaims} title={"Claims Opened"} />
 			</MiniCharts>
 			<MiniCharts>
-				<ClaimsOpened data={settledClaims} />
+				<Indicator data={settledClaims} title={"Claims Settled"} />
 			</MiniCharts>
 			<MiniCharts>
-				<ClaimsOpened data={paymentsClaims} />
+				<Indicator data={paymentsClaims} title={"Claims Payments"} />
 			</MiniCharts>
 			<BigChart>
 				<StackedBarChart data={claimsTypeYearly} />
