@@ -9,7 +9,7 @@ import {
 import Homepage from "./pages/homepage"
 import SummaryPage from "./pages/summary"
 import NavBar from "./components/navBar"
-
+import ClaimsCosts from "./pages/claimsCosts"
 const Routes = () => {
 	return (
 		<Router>
@@ -34,10 +34,13 @@ function Dashboards() {
 		<div>
 			<NavBar />
 			<Switch>
-				<Route path={`${match.path}/:topicId`}>
-					<Topic />
+				<Route exact path={`${match.path}/claims-costs-analysis`}>
+					<ClaimsCosts />
 				</Route>
-				<Route path={match.path}>
+				<Route exact path={`${match.path}/:topicId`}>
+					<NotAvail />
+				</Route>
+				<Route exact path={match.path}>
 					<SummaryPage />
 				</Route>
 			</Switch>
@@ -45,8 +48,10 @@ function Dashboards() {
 	)
 }
 
-function Topic() {
+const NotAvail = () => {
 	let { topicId } = useParams()
-	return <h3>Requested dashboard ID: {topicId}</h3>
+	return (
+		<h3>Requested dashboard ID: {topicId}. Not Available At the Moment.</h3>
+	)
 }
 export default Routes

@@ -10,7 +10,7 @@ const NavBar = () => {
 			<Links exact to={`${match.url}`}>
 				Summary
 			</Links>
-			<Links exact to={`${match.url}/claims-cost-analysis`}>
+			<Links exact to={`${match.url}/claims-costs-analysis`}>
 				Claims Cost Analysis
 			</Links>
 			<Links exact to={`${match.url}/fraud-analysis`}>
