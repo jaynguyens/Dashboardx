@@ -1,78 +1,36 @@
-import React, { useState, useEffect, useContext } from "react"
-import { QDocContext } from "../../enigma/docProvider"
-import SummaryClaimsType from "../../enigma/definition/summary/claimstype"
+import React from "react"
 import styled from "styled-components"
+
+import SummaryClaimsType from "../../enigma/definition/summary/claimstype"
 import StackedBarChart from "./stackedBarChart"
 import HyperCubeData from "../../enigma/definition/summary/dataFromHyperCubeObject"
 import ClaimsOpened from "./claimsOpened"
 
+import useHyperCubeDataObject from "../../hooks/useHyperCubeDataObject"
+import useLayoutSessionObject from "../../hooks/useLayoutSessionObject"
+
 const SummaryPage = () => {
-	const [Data, setData] = useState([])
-	const [Opened, setOpened] = useState()
-	const [Settled, setSettled] = useState()
-	const [Payments, setPayments] = useState()
+	// Stacked bar chart - claims by claim type
+	const claimsTypeYearly = useLayoutSessionObject(SummaryClaimsType)
 
-	const qdoc = useContext(QDocContext)
-
-	//TODO: maybe extract the useeffect as a custom hooks
-	// with 1 argument - the chart definition sheet.
-	// return an array -q Matrix-
-	useEffect(() => {
-		const ClaimType = async () => {
-			const session = await qdoc.createSessionObject(SummaryClaimsType)
-			const layout = await session.getLayout()
-			const dataset = layout.qHyperCube.qDataPages[0].qMatrix
-			setData(dataset)
-		}
-		ClaimType()
-	}, [qdoc])
-
-	// TODO: send the data in to StackedBarChart in the given structure
-
-	// TODO: make a custom hooks
-	useEffect(() => {
-		const ClaimOpened = async () => {
-			// const session = await qdoc.createSessionObject(SummaryClaimsOpened)
-			const layout = await qdoc.getObject("YAJMNj")
-			const data = await layout.getHyperCubeData(HyperCubeData)
-			setOpened(data[0].qMatrix)
-		}
-		ClaimOpened()
-	}, [qdoc])
-
-	//
-	useEffect(() => {
-		const ClaimOpened = async () => {
-			const layout = await qdoc.getObject("KrmuYX")
-			const data = await layout.getHyperCubeData(HyperCubeData)
-			setSettled(data[0].qMatrix)
-		}
-		ClaimOpened()
-	}, [qdoc])
-
-	useEffect(() => {
-		const ClaimOpened = async () => {
-			const layout = await qdoc.getObject("nqdxN")
-			const data = await layout.getHyperCubeData(HyperCubeData)
-			setPayments(data[0].qMatrix)
-		}
-		ClaimOpened()
-	}, [qdoc])
+	// Indicators
+	const openedClaims = useHyperCubeDataObject("YAJMNj", HyperCubeData)
+	const settledClaims = useHyperCubeDataObject("KrmuYX", HyperCubeData)
+	const paymentsClaims = useHyperCubeDataObject("nqdxN", HyperCubeData)
 
 	return (
 		<Div>
 			<MiniCharts>
-				<ClaimsOpened data={Opened} />
-			</MiniCharts>
-
-			<MiniCharts>
-				<ClaimsOpened data={Settled} />
+				<ClaimsOpened data={openedClaims} />
 			</MiniCharts>
 			<MiniCharts>
-				<ClaimsOpened data={Payments} />
+				<ClaimsOpened data={settledClaims} />
+			</MiniCharts>
+			<MiniCharts>
+				<ClaimsOpened data={paymentsClaims} />
 			</MiniCharts>
 			<BigChart>
-				<StackedBarChart />
+				<StackedBarChart data={claimsTypeYearly} />
 			</BigChart>
 		</Div>
 	)
@@ -84,7 +42,7 @@ const Div = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	background-color: lightgray;
+	background-color: rgba(247, 250, 252);
 	height: 100vh;
 `
 
@@ -94,12 +52,16 @@ const MiniCharts = styled.div`
 	background-color: #fff;
 	margin: 25px;
 	border-radius: 4px;
-	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+		0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	/* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06); */
 `
 const BigChart = styled.div`
 	width: 80vw;
 	height: 600px;
 	background-color: #fff;
 	border-radius: 2px;
-	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+		0 10px 10px -5px rgba(0, 0, 0, 0.04);
 `
