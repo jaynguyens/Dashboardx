@@ -56,7 +56,7 @@ const Div = styled.div`
 	flex-wrap: wrap;
 	justify-content: center;
 	background-color: rgba(247, 250, 252);
-	height: 100vh;
+	height: 93vh;
 `
 
 const MiniCharts = styled.div`

@@ -28,6 +28,7 @@ const Div = styled.div`
 	align-items: center;
 	height: 7vh;
 	border-bottom: 1px solid #e2e8f0;
+	box-sizing: border-box;
 `
 const Links = styled(NavLink)`
 	/* margin: 0.5rem; */

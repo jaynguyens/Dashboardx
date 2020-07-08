@@ -10,10 +10,10 @@ const StackedBarChart = ({ data }) => {
 	const keys = ["Windscreen", "Collision", "Theft", "Fire"]
 
 	const colors = {
-		Windscreen: "green",
-		Collision: "orange",
-		Theft: "purple",
-		Fire: "blue",
+		Windscreen: "#003f5c",
+		Collision: "#7a5195",
+		Theft: "#ef5675",
+		Fire: "#ffa600",
 	}
 
 	const dataset = [
