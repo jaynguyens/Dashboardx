@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react"
 import * as d3 from "d3"
-
+import useResizeObserver from "../../hooks/useResizeObserver"
 const StackedBarChart = ({ data }) => {
 	const svgRef = useRef()
 	const wrapperRef = useRef()
+	const dimension = useResizeObserver(wrapperRef)
 
 	//TODO:
 	const keys = ["Windscreen", "Collision", "Theft", "Fire"]
@@ -54,7 +55,6 @@ const StackedBarChart = ({ data }) => {
 	]
 
 	useEffect(() => {
-		const { width, height } = wrapperRef.current.getBoundingClientRect()
 		const margin = {
 			top: 20,
 			right: 20,
@@ -62,6 +62,7 @@ const StackedBarChart = ({ data }) => {
 			left: 40,
 		}
 
+		if (!dimension) return
 		const stackGenerator = d3
 			.stack()
 			.keys(keys)
@@ -75,8 +76,9 @@ const StackedBarChart = ({ data }) => {
 
 		const svg = d3
 			.select(svgRef.current)
-			.attr("width", width)
-			.attr("height", height)
+			// .attr("width", dimension.width)
+			// .attr("height", dimension.height)
+			.attr("viewBox", `0 0 ${dimension.width} ${dimension.height}`)
 
 		// Scale
 		// domain is the limit of the axis [0, maximum value of year]
@@ -86,13 +88,13 @@ const StackedBarChart = ({ data }) => {
 			x: d3
 				.scaleBand()
 				.domain(dataset.map((d) => d.name))
-				.range([margin.left, width - margin.right])
+				.range([margin.left, dimension.width - margin.right])
 				.padding(0.25),
 			// y is the year
 			y: d3
 				.scaleLinear()
 				.domain(extent)
-				.range([height - margin.bottom, margin.top]),
+				.range([dimension.height - margin.bottom, margin.top]),
 		}
 
 		// Axis
@@ -102,7 +104,7 @@ const StackedBarChart = ({ data }) => {
 				g
 					.attr(
 						"transform",
-						`translate(0, ${height - margin.bottom})`
+						`translate(0, ${dimension.height - margin.bottom})`
 					)
 					.call(d3.axisBottom(scale.x)),
 			y: (g) =>
@@ -122,7 +124,7 @@ const StackedBarChart = ({ data }) => {
 		svg.selectAll(".layers")
 			.data(layers)
 			.join("g")
-			.attr("class", "layer")
+			.attr("class", "layers")
 			.attr("fill", (layer) => colors[layer.key])
 			.selectAll("rect")
 			.data((layer) => layer)
@@ -134,7 +136,7 @@ const StackedBarChart = ({ data }) => {
 				"height",
 				(sequence) => scale.y(sequence[0]) - scale.y(sequence[1])
 			)
-	}, [keys, dataset, colors])
+	}, [keys, dataset, colors, dimension])
 
 	return (
 		<div ref={wrapperRef} style={{ height: "100%" }}>
