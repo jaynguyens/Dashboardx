@@ -8,6 +8,8 @@ import {
 } from "react-router-dom"
 import Homepage from "./pages/homepage"
 import SummaryPage from "./pages/summary"
+import NavBar from "./components/navBar"
+
 const Routes = () => {
 	return (
 		<Router>
@@ -30,21 +32,7 @@ function Dashboards() {
 
 	return (
 		<div>
-			{/* <h2>Claims Insurance 2020</h2>
-
-			<ul>
-				<li>
-					<Link to={`${match.url}`}>Summary</Link>
-
-					<Link to={`${match.url}/claims-cost-analysis`}>
-						Claims Cost Analysis
-					</Link>
-					<Link to={`${match.url}/fraud-analysis`}>
-						Fraud Analysis
-					</Link>
-				</li>
-			</ul>
- */}
+			<NavBar />
 			<Switch>
 				<Route path={`${match.path}/:topicId`}>
 					<Topic />
