@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react"
 import * as d3 from "d3"
 
-const StackedBarChart = () => {
+const StackedBarChart = ({ data }) => {
 	const svgRef = useRef()
 	const wrapperRef = useRef()
 
