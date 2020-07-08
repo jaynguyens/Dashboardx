@@ -7,8 +7,8 @@ const useLayoutSessionObject = (definition) => {
 
 	useEffect(() => {
 		const DataFromSessionObject = async () => {
-			const session = await qdoc.createSessionObject(definition)
-			const layout = await session.getLayout()
+			const app = await qdoc.createSessionObject(definition)
+			const layout = await app.getLayout()
 			const dataset = layout.qHyperCube.qDataPages[0].qMatrix
 			setData(dataset)
 		}
