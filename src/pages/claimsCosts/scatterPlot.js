@@ -89,13 +89,26 @@ const ScatterPlot = ({ dataset }) => {
 
 		// interactive
 		// TODO: assumption make context and pass data to the parent
-		d3.selectAll("circle").on("click", function (d, i) {
-			const listSelection = []
-			listSelection.push(d)
-			setSelection(listSelection)
-			d3.selectAll("circle").style("opacity", "0.3")
-			d3.select(this).style("fill", "#f04")
-		})
+		d3.selectAll("circle")
+			// ---------------------
+			// TODO: This is where qlik interactive
+			.on("click", function (d, i) {
+				const listSelection = []
+				listSelection.push(d)
+				setSelection(listSelection)
+			})
+
+			//---------------------
+			// standard display additional information
+			.on("mouseover", function (d, i) {
+				// console.log(d, i)
+			})
+			.on("mousemove", function (d, i) {
+				// console.log(d, i)
+			})
+			.on("mouseout", function (d, i) {
+				// console.log(d, i)
+			})
 	}, [dataset, dimension])
 
 	return (
