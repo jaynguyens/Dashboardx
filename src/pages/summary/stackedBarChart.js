@@ -83,6 +83,7 @@ const StackedBarChart = ({ data }) => {
 		// Scale
 		// domain is the limit of the axis [0, maximum value of year]
 		// range is the output in pixel
+		//TODO: Make scale and axis as a reusable components
 		const scale = {
 			// x is the number of claims
 			x: d3
