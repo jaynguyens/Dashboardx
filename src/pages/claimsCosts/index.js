@@ -6,6 +6,7 @@ import MiniChart from "../../components/miniChart"
 import BigChart from "../../components/bigChart"
 import Indicator from "./indicator"
 import ScatterPlot from "./scatterPlot"
+import BarChart from "./barChart"
 
 import SelectionContext from "./selectionContext"
 
@@ -47,7 +48,6 @@ const ClaimsCosts = () => {
 						display: "flex",
 						flexWrap: "wrap",
 						backgroundColor: "rgba(247, 250, 252)",
-						height: "93vh",
 						justifyContent: "center",
 					}}
 				>
@@ -60,8 +60,20 @@ const ClaimsCosts = () => {
 					<MiniChart>
 						<Indicator title="Loss Ratio" />
 					</MiniChart>
+				</div>
+				<div
+					style={{
+						display: "flex",
+						flexWrap: "wrap",
+						backgroundColor: "rgba(247, 250, 252)",
+						justifyContent: "center",
+					}}
+				>
 					<BigChart>
 						<ScatterPlot dataset={Process(data)} />
+					</BigChart>
+					<BigChart>
+						<BarChart />
 					</BigChart>
 				</div>
 			</SelectionContext.Provider>
