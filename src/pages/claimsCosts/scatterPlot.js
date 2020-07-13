@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useContext } from "react"
+import React, { useRef, useEffect } from "react"
 import * as d3 from "d3"
 import useResizeObserver from "../../hooks/useResizeObserver"
-import SelectionContext from "./selectionContext"
+// import SelectionContext from "./selectionContext"
 
 const ScatterPlot = ({ dataset }) => {
-	const { setSelection } = useContext(SelectionContext)
+	// const { setSelection } = useContext(SelectionContext)
 	// console.log(selection)
 	// Process data
 	// return [ {}, {}, {} ]
@@ -93,9 +93,9 @@ const ScatterPlot = ({ dataset }) => {
 			// ---------------------
 			// TODO: This is where qlik interactive
 			.on("click", function (d, i) {
-				const listSelection = []
-				listSelection.push(d)
-				setSelection(listSelection)
+				// const listSelection = []
+				// listSelection.push(d)
+				// setSelection(listSelection)
 			})
 
 			//---------------------
