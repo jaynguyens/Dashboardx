@@ -9,7 +9,7 @@ const useSelectionFromHyperCube = (definition, values) => {
 	useEffect(() => {
 		const DataFromSessionObject = async () => {
 			const app = await qdoc.createSessionObject(definition)
-			app.selectHyperCubeValues("/qHyperCubeDef", 0, values, false)
+			await app.selectHyperCubeValues("/qHyperCubeDef", 0, values, false)
 			const layout = await app.getLayout()
 			const dataset = await layout.qHyperCube.qDataPages[0].qMatrix
 			setData(dataset)
