@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import ClaimsVehicle from "../../enigma/definition/claims-costs/vehicleInsurance"
-// import useSelectionFromHyperCube from "../../hooks/useSelectionFromHyperCube"
 import useLayoutSessionObject from "../../hooks/useLayoutSessionObject"
+import useGetObjectGetLayout from "../../hooks/useGetObjectGetLayout"
 import MiniChart from "../../components/miniChart"
 import BigChart from "../../components/bigChart"
 import Indicator from "./indicator"
@@ -9,78 +9,77 @@ import ScatterPlot from "./scatterPlot"
 import BarChart from "./barChart"
 
 import SelectionContext from "./selectionContext"
+import ProcessData2 from "../../helper/processData2"
 
 const ClaimsCosts = () => {
 	const [selection, setSelection] = useState([])
 	const [toggle, setToggle] = useState(true)
-	const data = useLayoutSessionObject(ClaimsVehicle)
+	const scatterPlotDataset = useLayoutSessionObject(ClaimsVehicle)
+	const barChartDataset = useGetObjectGetLayout("eRsGevp")
 
-	// const selection = useSelectionFromHyperCube(ClaimsVehicle, [3, 5, 7, 8])
-	// console.log(selection)
+	// When dataset stil waiting from qlik
+	// data is undefined
 
-	const Process = (data) => {
-		const result = []
-		data.forEach((datum) =>
-			result.push({
-				"Rating Group": datum[0].qNum,
-				"Ave Total Claims Cost": datum[1].qNum,
-				"Ave Annual Premium": datum[2].qNum,
-				"Loss Ratio": datum[3].qNum,
-				qElemNumber: datum[0].qElemNumber,
-			})
-		)
-		return result
+	if (!barChartDataset || !scatterPlotDataset) {
+		return <div> no dataset -- still wating for dataset</div>
 	}
 
-	if (data) {
-		// console.log(data)
-		if (toggle) {
-			setSelection(Process(data))
-			setToggle(false)
-		}
+	const datasetBarChart = ProcessData2(
+		barChartDataset,
+		"Year",
+		"Total Claim Cost"
+	)
+	const datasetScatterPlot = ProcessData2(
+		scatterPlotDataset,
+		"Rating Group",
+		"Ave Total Claims Cost",
+		"Ave Annual Premium",
+		"Loss Ratio"
+	)
 
-		//loss ratio = sum total cost/ sum annual premium
-		return (
-			// {!data && <div> Loading ...</div>}
-			<SelectionContext.Provider value={{ selection, setSelection }}>
-				<div
-					style={{
-						display: "flex",
-						flexWrap: "wrap",
-						backgroundColor: "rgba(247, 250, 252)",
-						justifyContent: "center",
-					}}
-				>
-					<MiniChart>
-						<Indicator title="Ave Annual Premium" />
-					</MiniChart>
-					<MiniChart>
-						<Indicator title="Ave Total Claims Cost" />
-					</MiniChart>
-					<MiniChart>
-						<Indicator title="Loss Ratio" />
-					</MiniChart>
-				</div>
-				<div
-					style={{
-						display: "flex",
-						flexWrap: "wrap",
-						backgroundColor: "rgba(247, 250, 252)",
-						justifyContent: "center",
-					}}
-				>
-					<BigChart>
-						<ScatterPlot dataset={Process(data)} />
-					</BigChart>
-					<BigChart>
-						<BarChart />
-					</BigChart>
-				</div>
-			</SelectionContext.Provider>
-		)
-	} else {
-		return <>Loading...</>
+	if (toggle) {
+		setSelection(datasetScatterPlot)
+		setToggle(false)
 	}
+
+	return (
+		<SelectionContext.Provider value={{ selection, setSelection }}>
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					backgroundColor: "rgba(247, 250, 252)",
+					justifyContent: "center",
+				}}
+			>
+				<MiniChart>
+					<Indicator title="Ave Annual Premium" />
+				</MiniChart>
+				<MiniChart>
+					<Indicator title="Ave Total Claims Cost" />
+				</MiniChart>
+				<MiniChart>
+					<Indicator title="Loss Ratio" />
+				</MiniChart>
+			</div>
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					backgroundColor: "rgba(247, 250, 252)",
+					justifyContent: "center",
+					paddingBottom: "1rem",
+				}}
+			>
+				<BigChart>
+					<ScatterPlot dataset={datasetScatterPlot} />
+				</BigChart>
+				<BigChart>
+					<BarChart dataset={datasetBarChart} />
+				</BigChart>
+			</div>
+		</SelectionContext.Provider>
+	)
 }
 
 export default ClaimsCosts
