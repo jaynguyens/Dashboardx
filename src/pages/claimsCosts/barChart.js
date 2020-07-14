@@ -22,7 +22,7 @@ const BarChart = ({ dataset }) => {
          );
          const layout = await model.getLayout();
          const dataset = await layout.qHyperCube.qDataPages[0].qMatrix;
-         const result = ProcessData2(dataset, "Cause", "Cost");
+         const result = ProcessData2(dataset, "Cause", "Total Claim Cost");
 
          setData(result);
          console.log(dataset, result);
@@ -52,9 +52,7 @@ const BarChart = ({ dataset }) => {
             .padding(0.2),
          y: d3
             .scaleLinear()
-            .domain(
-               d3.extent(data.map(d => d["Total Claim Cost"] || d["Cost"]))
-            )
+            .domain(d3.extent(data.map(d => d["Total Claim Cost"])))
             .range([dimension.height - margin.bottom, margin.top])
             .nice()
       };
@@ -81,9 +79,11 @@ const BarChart = ({ dataset }) => {
          .join("rect")
          .attr("x", d => scale.x(d["Year"] || d["Cause"]))
          .attr("width", scale.x.bandwidth())
-         .attr("y", d => scale.y(d["Total Claim Cost"] || d["Cost"]))
-         .attr("height", d =>
-            scale.y(dimension.height - d["Total Claim Cost"] || d["Cost"])
+         .attr("y", d => scale.y(d["Total Claim Cost"]))
+         .attr(
+            "height",
+            d =>
+               dimension.height - margin.bottom - scale.y(d["Total Claim Cost"])
          );
 
       d3.selectAll("rect").on("click", d => HandleClick(d));
