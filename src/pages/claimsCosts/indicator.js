@@ -1,32 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-const Indicator = ({ title }) => {
-   /*
-   const annualPremium =
-      selection.map(d => d["Ave Annual Premium"]).reduce((a, b) => a + b, 0) /
-      selection.length;
+const Indicator = ({ data }) => {
+   const [dataset, setDataset] = useState();
 
-   const totalCost =
-      selection
-         .map(d => d["Ave Total Claims Cost"])
-         .reduce((a, b) => a + b, 0) / selection.length;
+   useEffect(() => {
+      setDataset(data);
+   }, [data]);
 
-   const lossRatio =
-      selection.map(d => d["Loss Ratio"]).reduce((a, b) => a + b, 0) /
-      selection.length;
-      */
    return (
       <Box>
-         <Title>{title}</Title>
-         {/*	<Number>
-				{title === "Loss Ratio"
-					? `${lossRatio.toFixed(2)}%`
-					: title === "Ave Annual Premium"
-					? `£ ${annualPremium.toFixed(2)}`
-					: `£ ${totalCost.toFixed(2)}`}
-				<p>{selection[title]}</p>
-         </Number>*/}
+         <Title>{dataset ? dataset[0] : <p>Loading...</p>}</Title>
+         <Number>{dataset ? dataset[1][0][0].qText : <p>loading...</p>}</Number>
       </Box>
    );
 };
@@ -37,16 +22,7 @@ const Title = styled.h1`
    font-size: 1.125rem;
    color: #4a5568;
 `;
-// eslint-disable-next-line
-const Div = styled.div`
-   display: flex;
-   height: 100%;
-   width: 100%;
-   justify-content: center;
-   flex-direction: column;
-   align-items: center;
-`;
-// eslint-disable-next-line
+
 const Number = styled.h1`
    font-size: 2rem;
    padding: 1rem 0.5rem;
@@ -55,6 +31,10 @@ const Number = styled.h1`
 `;
 
 const Box = styled.div`
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
    width: 250px;
    height: 200px;
    background-color: #fff;

@@ -11,35 +11,42 @@ import Indicator from "./indicator";
 const ClaimsCosts = () => {
    const scatterPlotDataset = useLayoutSessionObject(ClaimsVehicle);
    const barChartDataset = useGetObjectGetLayout("eRsGevp");
-
-   if (!barChartDataset || !scatterPlotDataset) {
-      return <div> no dataset -- still wating for dataset</div>;
-   }
-   console.log(barChartDataset);
-   const datasetBarChart = ProcessData2(
-      barChartDataset,
-      "Year",
-      "Total Claim Cost"
-   );
-
-   const datasetScatterPlot = ProcessData2(
-      scatterPlotDataset,
-      "Rating Group",
-      "Ave Total Claims Cost",
-      "Ave Annual Premium",
-      "Loss Ratio"
-   );
+   const aveAnnual = useGetObjectGetLayout("Gcnnpgm");
+   const aveClaim = useGetObjectGetLayout("YUgnRj");
+   const lossRatio = useGetObjectGetLayout("uRCGnRV");
 
    return (
       <>
          <Indicators>
-            <Indicator title="Ave Annual Premium" />
-            <Indicator title="Ave Total Claims Cost" />
-            <Indicator title="Loss Ratio" />
+            <Indicator data={aveAnnual} />
+            <Indicator data={aveClaim} />
+            <Indicator data={lossRatio} />
          </Indicators>
          <Indicators>
-            <ScatterPlot dataset={datasetScatterPlot} />
-            <BarChart dataset={datasetBarChart} />
+            {scatterPlotDataset ? (
+               <ScatterPlot
+                  dataset={ProcessData2(
+                     scatterPlotDataset,
+                     "Rating Group",
+                     "Ave Total Claims Cost",
+                     "Ave Annual Premium",
+                     "Loss Ratio"
+                  )}
+               />
+            ) : (
+               <p>Loading</p>
+            )}
+            {barChartDataset ? (
+               <BarChart
+                  dataset={ProcessData2(
+                     barChartDataset[1],
+                     "Year",
+                     "Total Claim Cost"
+                  )}
+               />
+            ) : (
+               <p>Loading</p>
+            )}
          </Indicators>
       </>
    );
