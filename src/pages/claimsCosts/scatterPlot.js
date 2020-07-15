@@ -90,19 +90,42 @@ const ScatterPlot = ({ dataset }) => {
                .call(d3.axisLeft(scale.y))
       };
 
-      svg.select(".x-axis").call(axis.x);
-      svg.select(".y-axis").call(axis.y);
+      svg.select(".x-axis")
+         .call(axis.x)
+         .attr("opacity", 0);
+      svg.select(".y-axis")
+         .call(axis.y)
+         .attr("opacity", 0);
 
       // plots
       svg.selectAll("circle")
          .data(data)
          .join("circle")
-         .attr("cx", d => scale.x(d["Ave Total Claims Cost"]))
+         .attr("cx", `${margin.left}`)
          .attr("cy", d => scale.y(d["Ave Annual Premium"]))
          .attr("r", d => scale.z(d["Loss Ratio"]))
          .style("fill", "#69b3a2")
          .style("opacity", "0.7")
          .attr("stroke", "#000");
+
+      // transition
+      // make axis visible using opacity
+      svg.select(".x-axis")
+         .transition()
+         .duration(1000)
+         .attr("opacity", 1)
+         .call(axis.x);
+      svg.select(".y-axis")
+         .transition()
+         .duration(1000)
+         .attr("opacity", 1);
+      // transition from initial x=0 to the true x
+      svg.selectAll("circle")
+         .transition()
+         .delay((d, i) => i * 3)
+         .duration(2000)
+         .attr("cx", d => scale.x(d["Ave Total Claims Cost"]))
+         .attr("cy", d => scale.y(d["Ave Annual Premium"]));
 
       // interactive
       // TODO: assumption make context and pass data to the parent
