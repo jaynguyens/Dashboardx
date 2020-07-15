@@ -10,6 +10,7 @@ import Homepage from "./pages/homepage";
 import SummaryPage from "./pages/summary";
 import NavBar from "./components/navBar";
 import ClaimsCosts from "./pages/claimsCosts";
+import FraudAnalysis from "./pages/fraudAnalysis";
 
 const Routes = () => {
    return (
@@ -41,6 +42,10 @@ function Dashboards() {
                <Route exact path={`${match.path}/claims-costs-analysis`}>
                   <ClaimsCosts />
                </Route>
+               <Route exact path={`${match.path}/fraud-analysis`}>
+                  <FraudAnalysis />
+               </Route>
+
                <Route exact path={`${match.path}/:topicId`}>
                   <NotAvail />
                </Route>
