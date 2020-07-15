@@ -1,13 +1,43 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import * as d3 from "d3";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import BigChart from "../../components/bigChart";
-// import SelectionContext from "./selectionContext"
+
+import useCreateSessionObject from "../../hooks/useCreateSessionObject";
+import ClaimsVehicle from "../../enigma/definition/claims-costs/vehicleInsurance";
+import ProcessData2 from "../../helper/processData2";
 
 const ScatterPlot = ({ dataset }) => {
+   const [data, setData] = useState(dataset);
    const svgRef = useRef();
    const wrapperRef = useRef();
    const dimension = useResizeObserver(wrapperRef);
+   const SessionObject = useCreateSessionObject(ClaimsVehicle);
+
+   const HandleClick = useCallback(
+      async d => {
+         if (SessionObject !== undefined) {
+            const session = await SessionObject;
+            await session.selectHyperCubeValues(
+               "/qHyperCubeDef",
+               0,
+               [d.qElemNumber],
+               false
+            );
+            const layout = await session.getLayout();
+            const dataset = await layout.qHyperCube.qDataPages[0].qMatrix;
+            const result = ProcessData2(
+               dataset,
+               "Rating Group",
+               "Ave Total Claims Cost",
+               "Ave Annual Premium",
+               "Loss Ratio"
+            );
+            setData(result);
+         }
+      },
+      [SessionObject]
+   );
 
    useEffect(() => {
       if (!dimension) return;
@@ -30,19 +60,19 @@ const ScatterPlot = ({ dataset }) => {
          // x is the ave total claims cost
          x: d3
             .scaleLinear()
-            .domain(d3.extent(dataset.map(d => d["Ave Total Claims Cost"])))
+            .domain(d3.extent(data.map(d => d["Ave Total Claims Cost"])))
             .range([margin.left, dimension.width - margin.right])
             .nice(),
          // y is the annual premium
          y: d3
             .scaleLinear()
-            .domain(d3.extent(dataset.map(d => d["Ave Annual Premium"])))
+            .domain(d3.extent(data.map(d => d["Ave Annual Premium"])))
             .range([dimension.height - margin.bottom, margin.top])
             .nice(),
          // z is the loss ratio for the radius of the bubble
          z: d3
             .scaleLinear()
-            .domain(d3.extent(dataset.map(d => d["Loss Ratio"])))
+            .domain(d3.extent(data.map(d => d["Loss Ratio"])))
             .range([7, 12])
       };
       // axis
@@ -65,7 +95,7 @@ const ScatterPlot = ({ dataset }) => {
 
       // plots
       svg.selectAll("circle")
-         .data(dataset)
+         .data(data)
          .join("circle")
          .attr("cx", d => scale.x(d["Ave Total Claims Cost"]))
          .attr("cy", d => scale.y(d["Ave Annual Premium"]))
@@ -79,11 +109,7 @@ const ScatterPlot = ({ dataset }) => {
       d3.selectAll("circle")
          // ---------------------
          // TODO: This is where qlik interactive
-         .on("click", function(d, i) {
-            // const listSelection = []
-            // listSelection.push(d)
-            // setSelection(listSelection)
-         })
+         .on("click", d => HandleClick(d))
 
          //---------------------
          // standard display additional information
@@ -96,7 +122,7 @@ const ScatterPlot = ({ dataset }) => {
          .on("mouseout", function(d, i) {
             // console.log(d, i)
          });
-   }, [dataset, dimension]);
+   }, [data, dimension, HandleClick]);
 
    return (
       <BigChart>
