@@ -9,7 +9,6 @@ const useHyperCubeDataObject = (object, definition) => {
       const GetDataFromObject = async () => {
          const layout = await qdoc.getObject(object);
          const data = await layout.getHyperCubeData(definition);
-         console.log(data);
          setData(data[0].qMatrix);
       };
       GetDataFromObject();
