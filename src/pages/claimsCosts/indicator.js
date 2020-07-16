@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
+import { SelectionContext } from "./index";
 
 const Indicator = ({ data }) => {
    const [dataset, setDataset] = useState();
+   const [value, setValue] = useState(false);
+   const [selection, setSelection] = useContext(SelectionContext);
 
    useEffect(() => {
       setDataset(data);
-   }, [data]);
+      setValue(selection);
+   }, [data, selection]);
 
    return (
       <Box>

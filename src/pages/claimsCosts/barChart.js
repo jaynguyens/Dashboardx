@@ -1,9 +1,16 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+   useState,
+   useEffect,
+   useRef,
+   useCallback,
+   useContext
+} from "react";
 import BigChart from "../../components/bigChart";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import * as d3 from "d3";
 import useModel from "../../hooks/useModel";
 import ProcessData2 from "../../helper/processData2";
+import { SelectionContext } from "./index";
 
 const BarChart = ({ dataset }) => {
    const [data, setData] = useState(dataset);
@@ -11,6 +18,8 @@ const BarChart = ({ dataset }) => {
    const svgRef = useRef();
    const dimension = useResizeObserver(wrapperRef);
    const model = useModel("eRsGevp");
+   const [selection, setSelection] = useContext(SelectionContext);
+   console.log("selection in barchart", selection);
 
    const HandleClick = useCallback(
       async d => {
@@ -23,11 +32,14 @@ const BarChart = ({ dataset }) => {
          const layout = await model.getLayout();
          const dataset = await layout.qHyperCube.qDataPages[0].qMatrix;
          const result = ProcessData2(dataset, "Cause", "Total Claim Cost");
+         setSelection(previousSelection => [
+            ...previousSelection,
+            { model: layout, elemNumber: d.qElemNumber }
+         ]);
 
          setData(result);
-         console.log(dataset, result);
       },
-      [model]
+      [model, setSelection]
    );
 
    useEffect(() => {
