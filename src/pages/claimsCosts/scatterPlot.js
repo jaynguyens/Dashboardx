@@ -1,23 +1,32 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+   useState,
+   useRef,
+   useEffect,
+   useCallback,
+   useContext
+} from "react";
 import * as d3 from "d3";
 import useResizeObserver from "../../hooks/useResizeObserver";
 import BigChart from "../../components/bigChart";
+import useSessionObject from "../../hooks/useSessionObject";
 
-import useCreateSessionObject from "../../hooks/useCreateSessionObject";
 import ClaimsVehicle from "../../enigma/definition/claims-costs/vehicleInsurance";
 import ProcessData2 from "../../helper/processData2";
+import { SelectionContext } from "../../enigma/selectionContext";
 
 const ScatterPlot = ({ dataset }) => {
    const [data, setData] = useState(dataset);
    const svgRef = useRef();
    const wrapperRef = useRef();
    const dimension = useResizeObserver(wrapperRef);
-   const SessionObject = useCreateSessionObject(ClaimsVehicle);
+   const sessionObject = useSessionObject(ClaimsVehicle);
+
+   const [selection, setSelection] = useContext(SelectionContext);
 
    const HandleClick = useCallback(
       async d => {
-         if (SessionObject !== undefined) {
-            const session = await SessionObject;
+         if (sessionObject !== undefined) {
+            const session = await sessionObject;
             await session.selectHyperCubeValues(
                "/qHyperCubeDef",
                0,
@@ -33,11 +42,40 @@ const ScatterPlot = ({ dataset }) => {
                "Ave Annual Premium",
                "Loss Ratio"
             );
+            setSelection(selection => [
+               ...selection,
+               {
+                  model: layout,
+                  elemNumber: d.qElemNumber
+               }
+            ]);
             setData(result);
          }
       },
-      [SessionObject]
+      [sessionObject, setSelection]
    );
+
+   // useeffect to catch the update selection
+
+   useEffect(() => {
+      if (selection && sessionObject !== undefined) {
+         (async () => {
+            const session = await sessionObject;
+            const layout = await session.getLayout();
+            const dataset = await layout.qHyperCube.qDataPages[0].qMatrix;
+            const result = ProcessData2(
+               dataset,
+               "Rating Group",
+               "Ave Total Claims Cost",
+               "Ave Annual Premium",
+               "Loss Ratio"
+            );
+            setData(result);
+         })();
+      }
+   }, [selection, sessionObject]);
+
+   // ---------------------
 
    useEffect(() => {
       if (!dimension) return;

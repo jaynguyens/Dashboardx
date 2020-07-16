@@ -2,15 +2,17 @@ import React, { useContext } from "react";
 import { NavLink, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { QDocContext } from "../enigma/docProvider";
+import { SelectionContext } from "../enigma/selectionContext";
 
 const NavBar = () => {
    let match = useRouteMatch();
    const qdoc = useContext(QDocContext);
-
+   const [selection, setSelection] = useContext(SelectionContext);
    const handleClick = async () => {
       try {
          await qdoc.clearAll();
-         console.log("cleared selection");
+         //  window.location.reload(false);
+         setSelection([]);
       } catch (e) {
          console.error("Error on clear selection", e);
       }

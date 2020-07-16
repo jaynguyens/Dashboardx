@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
    BrowserRouter as Router,
    Switch,
@@ -11,6 +11,7 @@ import SummaryPage from "./pages/summary";
 import NavBar from "./components/navBar";
 import ClaimsCosts from "./pages/claimsCosts";
 import FraudAnalysis from "./pages/fraudAnalysis";
+import { Provider } from "./enigma/selectionContext";
 
 const Routes = () => {
    return (
@@ -31,30 +32,35 @@ const Routes = () => {
 
 function Dashboards() {
    let match = useRouteMatch();
-
+   const [selection, setSelection] = useState([]);
    return (
-      <div>
-         <NavBar />
-         <div
-            style={{ minHeight: "93vh", backgroundColor: "rgba(247,250,252)" }}
-         >
-            <Switch>
-               <Route exact path={`${match.path}/claims-costs-analysis`}>
-                  <ClaimsCosts />
-               </Route>
-               <Route exact path={`${match.path}/fraud-analysis`}>
-                  <FraudAnalysis />
-               </Route>
+      <>
+         <Provider value={[selection, setSelection]}>
+            <NavBar />
+            <div
+               style={{
+                  minHeight: "93vh",
+                  backgroundColor: "rgba(247,250,252)"
+               }}
+            >
+               <Switch>
+                  <Route exact path={`${match.path}/claims-costs-analysis`}>
+                     <ClaimsCosts />
+                  </Route>
+                  <Route exact path={`${match.path}/fraud-analysis`}>
+                     <FraudAnalysis />
+                  </Route>
 
-               <Route exact path={`${match.path}/:topicId`}>
-                  <NotAvail />
-               </Route>
-               <Route exact path={match.path}>
-                  <SummaryPage />
-               </Route>
-            </Switch>
-         </div>
-      </div>
+                  <Route exact path={`${match.path}/:topicId`}>
+                     <NotAvail />
+                  </Route>
+                  <Route exact path={match.path}>
+                     <SummaryPage />
+                  </Route>
+               </Switch>
+            </div>
+         </Provider>
+      </>
    );
 }
 

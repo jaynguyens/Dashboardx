@@ -10,7 +10,8 @@ import useResizeObserver from "../../hooks/useResizeObserver";
 import * as d3 from "d3";
 import useModel from "../../hooks/useModel";
 import ProcessData2 from "../../helper/processData2";
-import { SelectionContext } from "./index";
+
+import { SelectionContext } from "../../enigma/selectionContext";
 
 const BarChart = ({ dataset }) => {
    const [data, setData] = useState(dataset);
@@ -19,7 +20,8 @@ const BarChart = ({ dataset }) => {
    const dimension = useResizeObserver(wrapperRef);
    const model = useModel("eRsGevp");
    const [selection, setSelection] = useContext(SelectionContext);
-   console.log("selection in barchart", selection);
+
+   // console.log("selection in barchart", selection);
 
    const HandleClick = useCallback(
       async d => {
@@ -32,8 +34,8 @@ const BarChart = ({ dataset }) => {
          const layout = await model.getLayout();
          const dataset = await layout.qHyperCube.qDataPages[0].qMatrix;
          const result = ProcessData2(dataset, "Cause", "Total Claim Cost");
-         setSelection(previousSelection => [
-            ...previousSelection,
+         setSelection(selection => [
+            ...selection,
             { model: layout, elemNumber: d.qElemNumber }
          ]);
 
@@ -42,6 +44,20 @@ const BarChart = ({ dataset }) => {
       [model, setSelection]
    );
 
+   // useeffect for diffrent selection
+
+   useEffect(() => {
+      if (selection && model !== undefined) {
+         (async () => {
+            const layout = await model.getLayout();
+            const dataset = await layout.qHyperCube.qDataPages[0].qMatrix;
+            const result = ProcessData2(dataset, "Cause", "Total Claim Cost");
+            setData(result);
+         })();
+      }
+   }, [selection, model]);
+
+   // ---------------------------------
    useEffect(() => {
       if (!dimension) return;
 

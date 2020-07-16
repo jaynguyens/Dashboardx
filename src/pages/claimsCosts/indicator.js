@@ -1,21 +1,29 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
-import { SelectionContext } from "./index";
+import { SelectionContext } from "../../enigma/selectionContext";
+import useModel from "../../hooks/useModel";
 
-const Indicator = ({ data }) => {
-   const [dataset, setDataset] = useState();
-   const [value, setValue] = useState(false);
+const Indicator = ({ dataset, objectId }) => {
+   const [data, setData] = useState(dataset);
    const [selection, setSelection] = useContext(SelectionContext);
+   const model = useModel(objectId);
 
    useEffect(() => {
-      setDataset(data);
-      setValue(selection);
-   }, [data, selection]);
+      setData(dataset);
+      if (selection && model !== undefined) {
+         (async () => {
+            const layout = await model.getLayout();
+            const qTitle = layout.qHyperCube.qMeasureInfo[0].qFallbackTitle;
+            const qMatrix = await layout.qHyperCube.qDataPages[0].qMatrix;
+            setData([qTitle, qMatrix]);
+         })();
+      }
+   }, [dataset, model, selection]);
 
    return (
       <Box>
-         <Title>{dataset ? dataset[0] : <p>Loading...</p>}</Title>
-         <Number>{dataset ? dataset[1][0][0].qText : <p>loading...</p>}</Number>
+         <Title>{data ? data[0] : <p>Loading...</p>}</Title>
+         <Number>{data ? data[1][0][0].qText : <p>loading...</p>}</Number>
       </Box>
    );
 };
