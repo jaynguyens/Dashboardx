@@ -99,14 +99,42 @@ const BarChart = ({ dataset }) => {
                .call(d3.axisLeft(scale.y))
       };
 
-      svg.select(".x-axis").call(axis.x);
-      svg.select(".y-axis").call(axis.y);
+      const color = d3
+         .scaleOrdinal()
+         .range(d3.schemePaired)
+         .domain(data.map(d => d["Year"] || d["Cause"]));
+
+      svg.select(".x-axis")
+         .call(axis.x)
+         .attr("opacity", 0);
+      svg.select(".y-axis")
+         .call(axis.y)
+         .attr("opacity", 0);
 
       svg.selectAll("rect")
          .data(data)
          .join("rect")
          .attr("x", d => scale.x(d["Year"] || d["Cause"]))
          .attr("width", scale.x.bandwidth())
+         .attr("y", scale.y(0))
+         .attr("height", dimension.height - margin.bottom - scale.y(0))
+         .attr("fill", d => color(d["Year"] || d["Cause"]));
+
+      // transition axis
+      svg.select(".x-axis")
+         .transition()
+         .duration(1000)
+         .attr("opacity", 1);
+      svg.select(".y-axis")
+         .transition()
+         .duration(1000)
+         .attr("opacity", 1);
+
+      // transition bar from bottom to top
+      svg.selectAll("rect")
+         .transition()
+         .duration(2000)
+         .delay((d, i) => i * 3)
          .attr("y", d => scale.y(d["Total Claim Cost"]))
          .attr(
             "height",
@@ -114,7 +142,13 @@ const BarChart = ({ dataset }) => {
                dimension.height - margin.bottom - scale.y(d["Total Claim Cost"])
          );
 
+      // handle click - with qlik selection
       d3.selectAll("rect").on("click", d => HandleClick(d));
+
+      // handle tooltips
+      /* d3.selectAll("rect").on("mouseover", (d, i) => { */
+      // console.log(d, i);
+      /* }); */
    }, [data, dimension, HandleClick]);
 
    return (
