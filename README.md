@@ -4,13 +4,13 @@ A dashboard develops with Qlik Associate Engine.
 
 ## ✨ Features
 
--  React Routing
--  Custom Hooks
--  Qlik Selection
+-   React Routing
+-   Custom Hooks
+-   Qlik Selection
 
 ## 📦 Installatin
 
-💻Install dependencies with your fav package management tool
+💻**Install dependencies**
 
 ```zsh
 npm install
