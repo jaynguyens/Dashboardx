@@ -7,7 +7,6 @@ import BarChart from "./barChart";
 import ProcessData2 from "../../helper/processData2";
 import Indicators from "../../components/indicators";
 import Indicator from "./indicator";
-import { SelectionContext } from "../../enigma/selectionContext";
 
 const ClaimsCosts = () => {
    const scatterPlotDataset = useLayoutSessionObject(ClaimsVehicle);

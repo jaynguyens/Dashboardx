@@ -5,7 +5,7 @@ import useModel from "../../hooks/useModel";
 
 const Indicator = ({ dataset, objectId }) => {
    const [data, setData] = useState(dataset);
-   const [selection, setSelection] = useContext(SelectionContext);
+   const [selection] = useContext(SelectionContext);
    const model = useModel(objectId);
 
    useEffect(() => {
