@@ -7,13 +7,14 @@ const ProcessData2 = (data, ...key) => {
          );
       }
       let dataset = {};
-
       dataset["qElemNumber"] = datum[0].qElemNumber;
       for (var i = 0; i < key.length; i++) {
          if (i === 0) {
             dataset[`${key[i]}`] = datum[i].qText;
          } else {
-            dataset[`${key[i]}`] = datum[i].qNum;
+            datum[i].qNum === "NaN"
+               ? (dataset[`${key[i]}`] = datum[i].qText)
+               : (dataset[`${key[i]}`] = datum[i].qNum);
          }
       }
       return result.push(dataset);
