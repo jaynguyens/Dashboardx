@@ -10,7 +10,6 @@ const LineChart = ({ dataset }) => {
    const dimensions = useResizeObserver(wrapperRef); //get the width, height from div
 
    useEffect(() => {
-      console.log(data);
       if (!dimensions) return;
 
       //margin
@@ -31,14 +30,15 @@ const LineChart = ({ dataset }) => {
       const scale = {
          x: d3
             .scaleLinear()
-            .domain(d3.extent(data.map(d => d["TP Age"])))
+            .domain(
+               d3.extent(data.map(d => d["TP Age"]).filter(age => age <= 100))
+            )
             .range([margin.left, dimensions.width - margin.right]),
          y: d3
             .scaleLinear()
             .domain(d3.extent(data.map(d => d["Count of Claims"])))
             .range([dimensions.height - margin.bottom, margin.top])
       };
-
       // ----------------------- axis
       const axis = {
          x: g =>
@@ -58,19 +58,38 @@ const LineChart = ({ dataset }) => {
       svg.select(".x-axis").call(axis.x);
       svg.select(".y-axis").call(axis.y);
 
+      const maleTP = data.filter(
+         d => d["TP Gender"] === "M" && d["TP Age"] <= 100
+      );
+      const femaleTP = data.filter(
+         d => d["TP Gender"] === "F" && d["TP Age"] <= 100
+      );
+
       // chart lines
       const line = d3
          .line()
          .x(d => scale.x(d["TP Age"]))
-         .y(d => scale.y(d["Count of Claims"]));
+         .y(d => scale.y(d["Count of Claims"]))
+         .defined(d => d !== null)
+         .curve(d3.curveCardinal);
 
-      svg.selectAll("lines")
-         .data(data)
+      svg.selectAll(".femalelinechart")
+         .data([femaleTP])
          .join("path")
-         .attr("d", d => line(d))
-         .attr("stroke", "black")
-         .attr("stroke-width", 2)
-         .style("fill", "none");
+         .attr("class", "femalelinechart")
+         .attr("d", line)
+         .attr("stroke", "pink")
+         .attr("fill", "none")
+         .attr("stroke-width", 2);
+
+      svg.selectAll(".linechart")
+         .data([maleTP])
+         .join("path")
+         .attr("class", "linechart")
+         .attr("d", line)
+         .attr("stroke", "blue")
+         .attr("fill", "none")
+         .attr("stroke-width", 2);
    }, [data, dimensions]);
    return (
       <BigChart>

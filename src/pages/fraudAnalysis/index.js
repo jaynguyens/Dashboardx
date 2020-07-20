@@ -3,6 +3,7 @@ import DataFromqMatrix from "../../helper/dataFromqMatrix";
 import useGetLayoutFromGetObject from "../../hooks/useGetLayoutFromGetObject";
 import Indicators from "../../components/indicators";
 import LinearChart from "./lineChart";
+import Table from "./table";
 /* FraudAnalysis consists of:
  * - A line chart
  * - A Table
@@ -30,14 +31,14 @@ const FraudAnalysis = () => {
                      qTop: 0,
                      qLeft: 0,
                      qWidth: layout.qHyperCube.qSize.qcx,
-                     qHeight: 5
+                     qHeight: 100
                   }
                ]
             });
             const qMatrix = await hypercube[0].qMatrix;
             const result = await qMatrix;
             const data = DataFromqMatrix(result, qDimensionInfo, qMeasureInfo);
-            //setTableDataset(data);
+            setTableDataset(data);
          })();
 
       LineObject &&
@@ -54,6 +55,7 @@ const FraudAnalysis = () => {
       <div>
          <Indicators>
             {lineDataset && <LinearChart dataset={lineDataset} />}
+            {tableDataset && <Table dataset={tableDataset} />}
          </Indicators>
       </div>
    );

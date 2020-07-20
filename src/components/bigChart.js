@@ -13,7 +13,7 @@ const Div = styled.div`
    min-width: 450px;
    height: 600px;
    padding-bottom: 1rem;
-   margin: 0 1rem;
+   margin: 1rem;
    background-color: #fff;
    border-radius: 2px;
    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
